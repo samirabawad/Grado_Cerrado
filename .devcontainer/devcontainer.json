@@ -1,0 +1,11 @@
+{
+  "name": "Grado Cerrado Dev",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [ 4200, 5000, 5432, 6333 ],
+  "postCreateCommand": "dotnet --info && node -v && psql --version",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  }
+}
