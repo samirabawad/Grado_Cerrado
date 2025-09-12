@@ -1,0 +1,6 @@
+@Grado_Cerrado.Infrastructure_HostAddress = http://localhost:5116
+
+GET {{Grado_Cerrado.Infrastructure_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

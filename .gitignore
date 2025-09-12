@@ -1,0 +1,63 @@
+# Archivos de compilación de .NET
+**/bin/
+**/obj/
+**/publish/
+
+# Archivos de usuario de IDE
+*.user
+*.userprefs
+*.suo
+*.cache
+*.vs/
+
+# Archivos de Rider
+.idea/
+*.sln.iml
+
+# Archivos de Visual Studio Code
+.vscode/
+.launch.json
+tasks.json
+
+# Archivos de NuGet
+**/packages/
+*.nupkg
+nuget.exe
+
+# Archivos de MSBuild
+*.msbuild.binlog
+*.binlog
+
+# Archivos de pruebas
+**/TestResults/
+*.coverage
+*.coveragexml
+
+# Archivos de Azure
+*.azurepubxml
+*.pubxml
+
+# Archivos de Docker
+.dockerignore
+
+# Archivos de macOS
+.DS_Store
+
+# Archivos de Windows
+Thumbs.db
+
+# Archivos de configuración local (appsettings.json de desarrollo)
+appsettings.Development.json
+appsettings.Local.json
+
+# Archivos de base de datos local (opcional)
+*.mdf
+*.ldf
+
+# Logs
+*.log
+logs/
+
+# Archivos temporales
+*.tmp
+*.temp
