@@ -59,10 +59,12 @@ builder.Services.AddDbContext<GradocerradoContext>(options =>
     }
 });
 
-
-
 // ✅ SERVICIOS DE INFRASTRUCTURE (OpenAI + Qdrant)  
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// 🆕 REGISTRAR SERVICIO CLASIFICADOR (DESPUÉS de AddInfrastructure)
+// IMPORTANTE: Debe ir DESPUÉS de AddInfrastructure porque depende de IAIService
+builder.Services.AddScoped<IContentClassifierService, ContentClassifierService>();
 
 // ✅ CONFIGURACIÓN DE CORS
 builder.Services.AddCors(options =>
@@ -75,6 +77,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
 // 🆕 REGISTRAR REPOSITORIOS
 builder.Services.AddScoped<ITestRepository, TestRepository>();
 builder.Services.AddScoped<IPreguntaRepository, PreguntaRepository>();
@@ -100,7 +103,7 @@ app.MapControllers();
 // Health check endpoint
 app.MapGet("/api/status", () => new {
     status = "OK",
-    timestamp = DateTime.Now, // ✅ Usar DateTime.Now sin UTC
+    timestamp = DateTime.Now,
     message = "Backend funcionando correctamente con Azure PostgreSQL"
 });
 
@@ -117,7 +120,7 @@ app.MapGet("/api/test-db", async (GradocerradoContext context) =>
             canConnect,
             studentCount,
             message = canConnect ? "Conexión exitosa a Azure PostgreSQL" : "Error de conexión",
-            timestamp = DateTime.Now, // ✅ Sin UTC
+            timestamp = DateTime.Now,
             database = "Azure PostgreSQL"
         });
     }

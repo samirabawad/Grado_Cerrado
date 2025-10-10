@@ -218,30 +218,43 @@ public class StudyController : ControllerBase
         using var command = connection.CreateCommand();
 
         command.CommandText = @"
+            WITH preguntas_unicas AS (
+                SELECT 
+                    pg.id,
+                    pg.texto_pregunta,
+                    pg.tipo,
+                    pg.nivel,
+                    t.nombre as tema,
+                    pg.respuesta_correcta_boolean,
+                    pg.respuesta_correcta_opcion,
+                    pg.explicacion
+                FROM preguntas_generadas pg
+                INNER JOIN temas t ON pg.tema_id = t.id
+                INNER JOIN areas a ON t.area_id = a.id
+                WHERE pg.activa = true
+                  AND pg.nivel = $1::nivel_dificultad
+                  AND (
+                      $2::text[] IS NULL 
+                      OR a.nombre = ANY($2::text[])
+                  )
+                ORDER BY RANDOM()
+                LIMIT $3
+            )
             SELECT 
-                pg.id,
-                pg.texto_pregunta,
-                pg.tipo,
-                pg.nivel,
-                t.nombre as tema,
-                pg.respuesta_correcta_boolean,
-                pg.respuesta_correcta_opcion,
-                pg.explicacion,
+                pu.id,
+                pu.texto_pregunta,
+                pu.tipo,
+                pu.nivel,
+                pu.tema,
+                pu.respuesta_correcta_boolean,
+                pu.respuesta_correcta_opcion,
+                pu.explicacion,
                 po.opcion,
                 po.texto_opcion,
                 po.es_correcta
-            FROM preguntas_generadas pg
-            INNER JOIN temas t ON pg.tema_id = t.id
-            INNER JOIN areas a ON t.area_id = a.id
-            LEFT JOIN pregunta_opciones po ON pg.id = po.pregunta_generada_id
-            WHERE pg.activa = true
-              AND pg.nivel = $1::nivel_dificultad
-              AND (
-                  $2::text[] IS NULL 
-                  OR a.nombre = ANY($2::text[])
-              )
-            ORDER BY RANDOM()
-            LIMIT $3";
+            FROM preguntas_unicas pu
+            LEFT JOIN pregunta_opciones po ON pu.id = po.pregunta_generada_id
+            ORDER BY pu.id, po.opcion";
 
         command.Parameters.Add(new Npgsql.NpgsqlParameter { Value = difficulty.ToLower() });
         command.Parameters.Add(new Npgsql.NpgsqlParameter
@@ -249,7 +262,7 @@ public class StudyController : ControllerBase
             Value = legalAreas.Any() ? legalAreas.ToArray() : (object)DBNull.Value,
             NpgsqlDbType = NpgsqlTypes.NpgsqlDbType.Array | NpgsqlTypes.NpgsqlDbType.Text
         });
-        command.Parameters.Add(new Npgsql.NpgsqlParameter { Value = count * 2 });
+        command.Parameters.Add(new Npgsql.NpgsqlParameter { Value = count });
 
         using var reader = await command.ExecuteReaderAsync();
 

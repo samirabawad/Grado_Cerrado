@@ -27,6 +27,13 @@ public static class DependencyInjection
         // ✅ TODOS LOS SERVICIOS DE IA USAN LANGCHAIN
         services.AddScoped<IAIService, LangChainQuestionService>();
         services.AddScoped<IEmbeddingService, LangChainEmbeddingService>();
+        // ═══════════════════════════════════════════════════════
+        // 🆕 RATE LIMITER (SINGLETON - COMPARTIDO POR TODA LA APP)
+        // ═══════════════════════════════════════════════════════
+
+
+        // 🆕 RATE LIMITER (SINGLETON para compartir estado entre todos los requests)
+        services.AddSingleton<IRateLimiter, OpenAIRateLimiter>();
 
         // Servicios de vectores y procesamiento
         services.AddScoped<IVectorService, QdrantService>();

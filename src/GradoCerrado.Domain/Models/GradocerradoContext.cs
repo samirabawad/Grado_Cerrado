@@ -62,6 +62,27 @@ public class GradocerradoContext : DbContext
             entity.Property(e => e.UltimoAcceso).HasColumnName("ultimo_acceso").HasColumnType("timestamp without time zone").HasDefaultValueSql("CURRENT_TIMESTAMP");
             entity.Property(e => e.Activo).HasColumnName("activo").HasDefaultValue(true);
             entity.Property(e => e.Verificado).HasColumnName("verificado").HasDefaultValue(false);
+            entity.Property(e => e.FrecuenciaEstudioSemanal)
+                .HasColumnName("frecuencia_estudio_semanal")  // ⚠️ snake_case
+                .HasDefaultValue(3);
+
+            entity.Property(e => e.ObjetivoDiasEstudio)
+                .HasColumnName("objetivo_dias_estudio")  // ⚠️ snake_case
+                .HasMaxLength(50)
+                .HasDefaultValue("flexible");
+
+            entity.Property(e => e.DiasPreferidosEstudio)
+                .HasColumnName("dias_preferidos_estudio")  // ⚠️ snake_case
+                .HasColumnType("jsonb");
+
+            entity.Property(e => e.RecordatorioEstudioActivo)
+                .HasColumnName("recordatorio_estudio_activo")  // ⚠️ snake_case
+                .HasDefaultValue(true);
+
+            entity.Property(e => e.HoraRecordatorio)
+                .HasColumnName("hora_recordatorio")  // ⚠️ snake_case
+                .HasColumnType("time");
+
             entity.HasIndex(e => e.Email).IsUnique();
         });
 
@@ -211,6 +232,9 @@ public class GradocerradoContext : DbContext
             entity.Property(e => e.TipoTestId).HasColumnName("tipo_test_id");
             entity.Property(e => e.AreaId).HasColumnName("area_id");
             entity.Property(e => e.FechaCreacion).HasColumnName("fecha_creacion").HasColumnType("timestamp without time zone");
+            entity.Property(e => e.FechaTest)
+            .HasColumnName("fecha_test")
+            .HasColumnType("date");
         });
 
         modelBuilder.Entity<PreguntasGenerada>(entity =>
